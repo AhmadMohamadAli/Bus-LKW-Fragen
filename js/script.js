@@ -305,7 +305,8 @@
 			{ id: 704, ziffer: "2c", klasse: "D1, D1E, D, DE", frage: "Welche Standortdaten zeichnet das Kontrollgerät Smart Tacho 2 (GEN 2 V 2) automatisch auf?", options: ["Die Geodaten zu Beginn und am Ende der täglichen Arbeitszeit bzw. nach jeweils drei Stunden Lenkzeit, beim erstmaligen Einsteigen der Fahrgäste am Beginn und das letztmalige Aussteigen am Ende einer Rundfahrt, bei jeder Überschreitung einer Grenze zu einem Mitgliedsstaat der EU", "Den Standort nach jeweils viereinhalb Stunden Lenkzeit", "Den vollständigen Fahrtverlauf", "Den Standort einer Lenkpause"], correctIndex: 0 }
        ];
 /* ============================================================
-   Bus & LKW Fragenkatalog - Komplettes Script (الكود الكامل)
+  /* ============================================================
+   Bus & LKW Questions Catalog - Complete Script
    ============================================================ */
 
 let questionsData = [];
@@ -313,9 +314,9 @@ let currentIndex = 0;
 let mode = null;
 let userAnswers = {};
 let timerInterval = null;
-let timeLeft = 30 * 60;
+let timeLeft = 30 * 60; // 30 minutes in seconds
 
-/* ===================== أدوات الخلط ===================== */
+/* ===================== Shuffling Utilities ===================== */
 function shuffleArray(array) {
     const arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
@@ -333,7 +334,7 @@ function shuffleQuestionOptions(question) {
     return { ...question, options: newOptions, correctIndex: newCorrectIndex };
 }
 
-/* ===================== 🔊 الصوت الألماني (اختيار الأفضل) ===================== */
+/* ===================== German Text-to-Speech Settings ===================== */
 let autoSpeakEnabled = false;
 let deVoice = null;
 let voicesReady = false;
@@ -409,7 +410,7 @@ function changeVoice(name) {
     }
 }
 
-/* ===================== 🎧 ملفات الصوت والنطق ===================== */
+/* ===================== Audio & Pronunciation Handling ===================== */
 const audioPlayer = new Audio();
 const AUDIO_DIR = './audio/';
 let stopCurrentMp3 = null;
@@ -593,7 +594,7 @@ function toggleAutoSpeak() {
     }
 }
 
-/* ===================== وضع الاختبار والتحكم ===================== */
+/* ===================== Quiz Modes & Flow Control ===================== */
 function setMode(selectedMode, event) {
     stopSpeaking();
     mode = selectedMode;
@@ -604,7 +605,8 @@ function setMode(selectedMode, event) {
     userAnswers = {};
 
     if (mode === 'exam') {
-        const picked = shuffleArray(originalQuestions).slice(0, 30);
+        // Pick exactly 40 random questions for the exam mode
+        const picked = shuffleArray(originalQuestions).slice(0, 40);
         questionsData = picked.map(shuffleQuestionOptions);
     } else {
         questionsData = originalQuestions.map(shuffleQuestionOptions);
@@ -620,7 +622,7 @@ function setMode(selectedMode, event) {
     const examTimerHeader = document.getElementById('examTimerHeader');
     const historyContainer = document.getElementById('historyContainer');
 
-    // إخفاء سجل النتائج عند بدء الوضع
+    // Hide history container when starting a mode
     if (historyContainer) historyContainer.style.display = 'none';
 
     if (mode === 'exam') {
@@ -653,7 +655,7 @@ function renderQuestion() {
     questionContainer.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
             <div style="flex: 1;">${q.frage}</div>
-            <button type="button" class="tts-icon-btn" onclick="speakOnClick(event, '${escapedQuestion}')" title="استماع للسؤال">
+            <button type="button" class="tts-icon-btn" onclick="speakOnClick(event, '${escapedQuestion}')" title="Listen to question">
                 <i class="fa-solid fa-volume-high"></i>
             </button>
         </div>
@@ -664,15 +666,15 @@ function renderQuestion() {
     const submitBtn = document.getElementById('submitExamBtn');
     submitBtn.style.display = (mode === 'exam') ? 'inline-flex' : 'none';
 
-    // التحكم بذر "التالي" ليصبح "إنهاء" في السؤال الأخير
+    // Change "Next" button to "Finish" on the last question
     const nextBtn = document.getElementById('nextBtn');
     if (nextBtn) {
         if (currentIndex === questionsData.length - 1) {
-            nextBtn.innerHTML = 'إنهاء <i class="fa-solid fa-check"></i>';
+            nextBtn.innerHTML = 'Finish <i class="fa-solid fa-check"></i>';
             nextBtn.className = 'btn btn-success';
             nextBtn.onclick = confirmSubmitExam;
         } else {
-            nextBtn.innerHTML = 'التالي <i class="fa-solid fa-arrow-right"></i>';
+            nextBtn.innerHTML = 'Next <i class="fa-solid fa-arrow-right"></i>';
             nextBtn.className = 'btn';
             nextBtn.onclick = nextQuestion;
         }
@@ -699,7 +701,7 @@ function renderQuestion() {
             <input type="radio" name="q_${q.id}" ${userAnswers[q.id] === idx ? 'checked' : ''}>
             <div style="flex:1; line-height:1.4; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                 <div>${optDe}</div>
-                <button type="button" class="tts-icon-btn" onclick="speakOnClick(event, '${escapedOpt}')" title="استماع للإجابة">
+                <button type="button" class="tts-icon-btn" onclick="speakOnClick(event, '${escapedOpt}')" title="Listen to option">
                     <i class="fa-solid fa-volume-high"></i>
                 </button>
             </div>`;
@@ -746,24 +748,26 @@ function toggleTheme() {
         : '<i class="fa-solid fa-moon"></i>';
 }
 
-/* ===================== المؤقت ===================== */
+/* ===================== Exam Timer (30 Minutes) ===================== */
 function startTimer() {
     stopTimer();
-    timeLeft = 30 * 60;
+    timeLeft = 30 * 60; // Exactly 30 minutes
     updateTimerDisplay();
     timerInterval = setInterval(() => {
         timeLeft--;
         updateTimerDisplay();
         if (timeLeft <= 0) {
             stopTimer();
-            alert("Die Prüfungszeit ist abgelaufen!");
+            alert("Die Prüfungszeit ist abgelaufen! (Exam time has expired)");
             evaluateExam();
         }
     }, 1000);
 }
+
 function stopTimer() {
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
 }
+
 function updateTimerDisplay() {
     const m = Math.floor(timeLeft / 60);
     const s = timeLeft % 60;
@@ -771,7 +775,7 @@ function updateTimerDisplay() {
         `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
-/* ===================== حفظ نتائج الاختبار ===================== */
+/* ===================== Save Test Results ===================== */
 function saveTestResult(score, total) {
     try {
         const resultData = {
@@ -789,13 +793,13 @@ function saveTestResult(score, total) {
         history.push(resultData);
         localStorage.setItem('exam_history', JSON.stringify(history));
     } catch (e) {
-        console.error("خطأ في حفظ النتائج:", e);
+        console.error("Error saving results:", e);
     }
 }
 
-/* ===================== إنهاء الامتحان ===================== */
+/* ===================== Submit and Evaluate Exam ===================== */
 function confirmSubmitExam() {
-    if (confirm("Möchten Sie die Prüfung wirklich abgeben?")) {
+    if (confirm("Möchten Sie die Prüfung wirklich abgeben? (Do you really want to submit the exam?)")) {
         stopTimer();
         evaluateExam();
     }
@@ -834,14 +838,14 @@ function evaluateExam() {
         <div style="text-align:center; padding:20px;">
             <i class="fa-solid ${passed ? 'fa-circle-check' : 'fa-circle-xmark'}"
                style="font-size:3.5rem; color:${passed ? 'var(--success)' : 'var(--danger)'}; margin-bottom:12px;"></i>
-            <h2 style="margin-bottom:10px;">Prüfungsergebnis</h2>
+            <h2 style="margin-bottom:10px;">Prüfungsergebnis (Exam Result)</h2>
             <p style="font-size:1.1rem; margin-bottom:10px;">Beantwortete Fragen: ${answeredCount} von ${questionsData.length}</p>
             <p style="font-size:1.2rem; font-weight:bold; margin-bottom:15px; color:${passed ? 'var(--success)' : 'var(--danger)'};">
-                Ergebnis: ${correctCount} (${percent}%) - ${passed ? 'Bestanden' : 'Nicht bestanden'}
+                Ergebnis: ${correctCount} (${percent}%) - ${passed ? 'Bestanden (Passed)' : 'Nicht bestanden (Failed)'}
             </p>
             ${wrongHtml ? `
                 <div style="margin-top:25px; text-align:left;">
-                    <h3 style="margin-bottom:14px; border-bottom:2px solid var(--border); padding-bottom:8px; font-size:1.2rem;">Fehleranalyse:</h3>
+                    <h3 style="margin-bottom:14px; border-bottom:2px solid var(--border); padding-bottom:8px; font-size:1.2rem;">Fehleranalyse (Error Analysis):</h3>
                     ${wrongHtml}
                 </div>` :
                 '<p style="color:var(--success); font-weight:bold; margin:15px 0;">Hervorragend! Sie haben alle Fragen richtig beantwortet.</p>'}
@@ -851,11 +855,12 @@ function evaluateExam() {
         </div>`;
 }
 
-/* ===================== الانتقال السريع + البحث ===================== */
+/* ===================== Quick Jump & Search ===================== */
 function toggleJumpGrid() {
     const grid = document.getElementById('jumpContainer');
     grid.style.display = grid.style.display === 'none' ? 'block' : 'none';
 }
+
 function updateJumpGrid() {
     const grid = document.getElementById('jumpGrid');
     grid.innerHTML = '';
@@ -872,6 +877,7 @@ function updateJumpGrid() {
         grid.appendChild(btn);
     });
 }
+
 function filterQuestions() {
     const term = document.getElementById('searchInput').value.toLowerCase().trim();
     if (!term) return;
@@ -881,7 +887,7 @@ function filterQuestions() {
     if (idx !== -1) { currentIndex = idx; renderQuestion(); }
 }
 
-/* ===================== عرض سجل نتائج الاختبارات ===================== */
+/* ===================== Exam History Management ===================== */
 function renderExamHistory(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -895,13 +901,13 @@ function renderExamHistory(containerId) {
     }
 
     if (history.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:15px;">لا توجد نتائج سجّلت بعد.</p>';
+        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:15px;">No exam history recorded yet.</p>';
         return;
     }
 
     let html = `
         <div style="margin-top: 20px; text-align: left;">
-            <h3 style="margin-bottom: 12px; border-bottom: 2px solid var(--border); padding-bottom: 6px;">سجل الاختبارات السابقة</h3>
+            <h3 style="margin-bottom: 12px; border-bottom: 2px solid var(--border); padding-bottom: 6px;">Exam History</h3>
             <ul style="list-style: none; padding: 0;">
     `;
 
@@ -912,7 +918,7 @@ function renderExamHistory(containerId) {
         html += `
             <li style="background: var(--card-bg, #f9f9f9); border: 1px solid var(--border); padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <strong>الاختبار #${history.length - index}</strong><br>
+                    <strong>Exam #${history.length - index}</strong><br>
                     <span style="font-size: 0.9rem; color: var(--text-muted);">${res.date}</span>
                 </div>
                 <div style="text-align: right;">
@@ -920,7 +926,7 @@ function renderExamHistory(containerId) {
                         ${res.score} / ${res.total} (${percent}%)
                     </span><br>
                     <span style="font-size: 0.85rem; padding: 2px 6px; border-radius: 4px; background: ${passed ? 'rgba(34,197,94,0.1)' : 'rgba(220,38,38,0.1)'}; color: ${passed ? 'var(--success)' : 'var(--danger)'};">
-                        ${passed ? 'ناجح' : 'راسب'}
+                        ${passed ? 'Passed' : 'Failed'}
                     </span>
                 </div>
             </li>
@@ -929,7 +935,7 @@ function renderExamHistory(containerId) {
 
     html += `
             </ul>
-            <button onclick="clearExamHistory('${containerId}')" class="btn" style="background: var(--danger); margin-top: 10px; font-size: 0.9rem; padding: 6px 12px;">مسح السجل</button>
+            <button onclick="clearExamHistory('${containerId}')" class="btn" style="background: var(--danger); margin-top: 10px; font-size: 0.9rem; padding: 6px 12px;">Clear History</button>
         </div>
     `;
 
@@ -937,12 +943,12 @@ function renderExamHistory(containerId) {
 }
 
 function clearExamHistory(containerId) {
-    if (confirm("هل أنت متأكد من رغبتك في مسح سجل النتائج؟")) {
+    if (confirm("Are you sure you want to clear the exam history?")) {
         try {
             localStorage.removeItem('exam_history');
             renderExamHistory(containerId);
         } catch (e) {
-            console.error("خطأ في مسح السجل:", e);
+            console.error("Error clearing history:", e);
         }
     }
 }
