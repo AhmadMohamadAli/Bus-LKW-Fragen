@@ -16,7 +16,7 @@ import asyncio, hashlib, json, re, sys
 from pathlib import Path
 
 VOICE = "de-DE-KatjaNeural"   # بدائل: de-DE-ConradNeural (رجل)، de-DE-SeraphinaMultilingualNeural، de-DE-FlorianMultilingualNeural
-RATE = "+0%"                  # السرعة: "+0%" عادي، "-10%" أبطأ
+RATE = "-5%"                  # السرعة: "+0%" عادي، "-10%" أبطأ
 CONCURRENCY = 6
 SCRIPT = Path(sys.argv[1]) if len(sys.argv) > 1 and not sys.argv[1].startswith("--") else Path("js/script.js")
 OUT = Path("audio")
