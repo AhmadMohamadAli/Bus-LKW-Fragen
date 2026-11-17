@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kompletter Fragenkatalog Bus & LKW - Offiziell</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+<div class="container">
+    <header id="mainHeader">
+        <h2><i class="fa-solid fa-truck-fast"></i> Bus & LKW Fragen</h2>
+        <div class="header-controls" style="display: flex; gap: 10px; align-items: center;">
+            <!-- 🔊 قائمة اختيار أفضل صوت ألماني -->
+            <select id="voiceSelect" class="btn btn-secondary" style="padding: 6px 10px; font-size: 0.85rem; max-width: 150px; background: var(--card-bg, #fff); color: var(--text-main, #333);" title="اختر الصوت الألماني"></select>
+            
+            <button class="btn btn-secondary" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+        </div>
+    </header>
+
+    <div class="quiz-modes" id="quizModesSection">
+        <div class="mode-card" id="cardPractice" onclick="setMode('practice', event)">
+            <i class="fa-solid fa-book-open"></i>
+            <h3>وضع التدريب</h3>
+            <p>Übung (Sortiert)</p>
+        </div>
+        <div class="mode-card" id="cardExam" onclick="setMode('exam', event)">
+            <i class="fa-solid fa-file-pen"></i>
+            <h3>وضع الامتحان</h3>
+            <p>Prüfung (30 Zufall)</p>
+        </div>
+    </div>
+
+    <!-- 📊 مكان عرض سجل النتائج في صفحة البداية -->
+    <div id="historyContainer" style="margin-bottom: 20px;"></div>
+
+    <div class="search-filter-bar" id="searchBarSection" style="display: none;">
+        <input type="text" id="searchInput" class="search-input" placeholder="ابحث برقم السؤال أو كلمة..." oninput="filterQuestions()">
+        <button class="btn btn-secondary" onclick="toggleJumpGrid()"><i class="fa-solid fa-list-ol"></i> الانتقال السريع</button>
+    </div>
+
+    <div id="jumpContainer" style="display: none;" class="card">
+        <div class="jump-grid" id="jumpGrid"></div>
+    </div>
+
+    <div class="card" id="quizCard" style="text-align: center; padding: 40px 20px;">
+        <div id="startScreen">
+            <i class="fa-solid fa-hand-pointer" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+            <h2>الرجاء اختيار وضع الاختبار من الأعلى للبدء</h2>
+            <p style="color: var(--text-muted); margin-top: 8px;">Bitte wählen Sie oben einen Modus aus, um zu beginnen.</p>
+        </div>
+
+        <div id="quizContent" style="display: none; text-align: left;">
+            <div id="examTimerHeader" style="display: none; justify-content: space-between; align-items: center; margin-bottom: 12px; background: rgba(220,38,38,.1); padding: 8px 12px; border-radius: 8px; color: var(--danger); font-weight: bold;">
+                <span><i class="fa-solid fa-file-shield"></i> امتحان رسمي / Offizielle Prüfung</span>
+                <span><i class="fa-solid fa-clock"></i> <span id="timerDisplay">30:00</span></span>
+            </div>
+
+            <div class="tts-bar">
+                <button id="ttsToggle" class="btn btn-tts" onclick="toggleAutoSpeak()">
+                    <i class="fa-solid fa-volume-xmark"></i> Vorlesen: AUS
+                </button>
+            </div>
+            <div class="meta-info">
+                <span id="questionNumber" style="font-weight: 650; color: var(--primary);">Frage ID: 1</span>
+                <div class="meta-tags">
+                    <span class="badge" id="questionZiffer">Ziffer: 1a</span>
+                    <span class="badge" id="questionKlasse">Klasse: C1, C, D</span>
+                </div>
+            </div>
+
+            <div class="question-text" id="questionDe">Lade Fragenkatalog...</div>
+            <div class="options-list" id="optionsList"></div>
+
+            <div class="navigation-bar">
+                <button id="submitExamBtn" class="btn btn-success" style="display: none;" onclick="confirmSubmitExam()"><i class="fa-solid fa-check"></i> إنهاء</button>
+                <a href="https://www.expatnetwork.online/" class="btn btn-home"><i class="fa-solid fa-house"></i> الرئيسية</a>
+                <button class="btn btn-secondary" onclick="prevQuestion()"><i class="fa-solid fa-arrow-left"></i> السابق</button>
+                <span id="progressIndicator">1 / 30</span>
+                <!-- زر التالي الذي يتحول تلقائياً إلى إنهاء في السؤال الأخير -->
+                <button class="btn" id="nextBtn" onclick="nextQuestion()">التالي <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- ربط ملفات الجافاسكريبت وتفعيل استدعاء سجل النتائج فور تحميل الصفحة -->
+    <script src="./audio/manifest.js"></script>
+    <script src="./js/script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            if (typeof renderExamHistory === 'function') {
+                renderExamHistory('historyContainer');
+            }
+        });
+    </script>
+</body>
+</html>
