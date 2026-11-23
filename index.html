@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="robots" content="noindex, nofollow">
     <title>Kompletter Fragenkatalog Bus & LKW - Offiziell</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,8 +15,6 @@
         <h2><i class="fa-solid fa-truck-fast"></i> Bus & LKW Fragen</h2>
         <div class="header-controls" style="display: flex; gap: 10px; align-items: center;">
             <!-- 🔊 قائمة اختيار أفضل صوت ألماني -->
-            <select id="voiceSelect" class="btn btn-secondary" style="padding: 6px 10px; font-size: 0.85rem; max-width: 150px; background: var(--card-bg, #fff); color: var(--text-main, #333);" title="اختر الصوت الألماني"></select>
-            
             <button class="btn btn-secondary" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
         </div>
     </header>
@@ -29,7 +28,7 @@
         <div class="mode-card" id="cardExam" onclick="setMode('exam', event)">
             <i class="fa-solid fa-file-pen"></i>
             <h3>وضع الامتحان</h3>
-            <p>Prüfung (30 Zufall)</p>
+            <p>Prüfung (40 Zufall)</p>
         </div>
     </div>
 
@@ -54,7 +53,7 @@
 
         <div id="quizContent" style="display: none; text-align: left;">
             <div id="examTimerHeader" style="display: none; justify-content: space-between; align-items: center; margin-bottom: 12px; background: rgba(220,38,38,.1); padding: 8px 12px; border-radius: 8px; color: var(--danger); font-weight: bold;">
-                <span><i class="fa-solid fa-file-shield"></i> امتحان رسمي / Offizielle Prüfung</span>
+                <span><i class="fa-solid fa-file-shield"></i>Prüfung</span>
                 <span><i class="fa-solid fa-clock"></i> <span id="timerDisplay">30:00</span></span>
             </div>
 
@@ -85,6 +84,21 @@
         </div>
     </div>
 </div>
+<aside class="notice-box" aria-label="تنويه / Hinweis">
+  <div class="notice-section notice-ar" lang="ar" dir="rtl">
+    <h3 class="notice-title">تنويه:</h3>
+    <p class="notice-text">
+      هذا الموقع لا يُستخدم لأي غرض تجاري ولا يتبع لأي جهة رسمية أو تجارية، وإنما هو مخصص فقط للتدريب والمراجعة المؤقتة. أي تشابه في الأسئلة هو أمر غير مقصود، والمحتوى يمثل جهداً شخصياً تم إعداده وجمعه من أشخاص بغرض التعلم فقط.
+    </p>
+  </div>
+
+  <div class="notice-section notice-de" lang="de" dir="ltr">
+    <h3 class="notice-title">Hinweis:</h3>
+    <p class="notice-text">
+      Diese Website wird nicht für kommerzielle Zwecke genutzt und steht in keiner Verbindung zu einer offiziellen oder gewerblichen Stelle, sondern dient ausschließlich dem vorübergehenden Üben und Lernen. Etwaige Ähnlichkeiten bei den Fragen sind unbeabsichtigt; die Inhalte stellen eine persönliche Arbeit dar, die von Personen allein zu Lernzwecken erstellt und zusammengestellt wurde.
+    </p>
+  </div>
+</aside>
 
     <!-- ربط ملفات الجافاسكريبت وتفعيل استدعاء سجل النتائج فور تحميل الصفحة -->
     <script src="./audio/manifest.js"></script>
